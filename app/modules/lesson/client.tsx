@@ -9,6 +9,7 @@ import { generateLessonStream } from '@/lib/ai/gemini';
 import type { Module, Lesson, ContentBlock, GenerationContext } from '@/types';
 import { generateId, getDateKey } from '@/lib/utils';
 import { BlockRenderer } from '@/components/blocks';
+import { ModuleQA } from '@/components/module-qa';
 
 function cleanJson(text: string): string {
   let cleaned = text.trim();
@@ -175,6 +176,23 @@ export function LessonViewClient() {
       )}
 
       <BlockRenderer blocks={blocks} />
+
+      {!generating && blocks.length > 0 && module && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="pt-8 border-t border-white/5"
+        >
+          <ModuleQA
+            module={module}
+            lessonTitles={(outlineLessons ?? []).map(l => l.title)}
+            onQuestionAdded={loadLesson}
+            lessonId={lesson?.id}
+            lessonTitle={lesson?.title ?? currentOutline?.title}
+          />
+        </motion.div>
+      )}
 
       {!generating && blocks.length > 0 && (
         <motion.footer

@@ -289,4 +289,7 @@ export interface ModuleQuestion {
   question: string;
   answer: string;
   createdAt: Date;
+  lessonId?: string;
+  lessonTitle?: string;
+  createdModuleId?: string; // if this Q&A spawned a new module
 }

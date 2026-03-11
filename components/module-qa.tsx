@@ -12,9 +12,11 @@ interface ModuleQAProps {
   module: Module;
   lessonTitles: string[];
   onQuestionAdded: () => void;
+  lessonId?: string;
+  lessonTitle?: string;
 }
 
-export function ModuleQA({ module, lessonTitles, onQuestionAdded }: ModuleQAProps) {
+export function ModuleQA({ module, lessonTitles, onQuestionAdded, lessonId, lessonTitle }: ModuleQAProps) {
   const router = useRouter();
   const [question, setQuestion] = useState('');
   const [isAsking, setIsAsking] = useState(false);
@@ -40,6 +42,8 @@ export function ModuleQA({ module, lessonTitles, onQuestionAdded }: ModuleQAProp
         question: question,
         answer: answer,
         createdAt: new Date(),
+        lessonId,
+        lessonTitle,
       };
 
       await addQuestionToModule(module.id, newQuestion);
