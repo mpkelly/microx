@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;600&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #000;
+}
+
+html.light {
+  background: #fafafa;
+}
+
+body {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  background: #000;
+  color: #fff;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+.light body,
+html.light body {
+  background: #fafafa;
+  color: #000;
+}
+
+/* Monospace for data */
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Contrast utilities - dark mode */
+.text-bright {
+  color: rgba(255, 255, 255, 0.95);
+}
+.text-medium {
+  color: rgba(255, 255, 255, 0.8);
+}
+.text-dim {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Contrast utilities - light mode */
+.light .text-bright {
+  color: rgba(0, 0, 0, 0.95);
+}
+.light .text-medium {
+  color: rgba(0, 0, 0, 0.8);
+}
+.light .text-dim {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* White opacity overrides for light mode */
+.light .text-white\/95 { color: rgba(0, 0, 0, 0.95); }
+.light .text-white\/90 { color: rgba(0, 0, 0, 0.9); }
+.light .text-white\/85 { color: rgba(0, 0, 0, 0.85); }
+.light .text-white\/80 { color: rgba(0, 0, 0, 0.8); }
+.light .text-white\/70 { color: rgba(0, 0, 0, 0.7); }
+.light .text-white\/60 { color: rgba(0, 0, 0, 0.6); }
+.light .text-white\/50 { color: rgba(0, 0, 0, 0.5); }
+.light .text-white\/40 { color: rgba(0, 0, 0, 0.4); }
+.light .text-white\/30 { color: rgba(0, 0, 0, 0.3); }
+.light .text-white\/20 { color: rgba(0, 0, 0, 0.2); }
+.light .text-white { color: #000; }
+
+.light .bg-white\/5 { background-color: rgba(0, 0, 0, 0.03); }
+.light .bg-white\/10 { background-color: rgba(0, 0, 0, 0.05); }
+.light .bg-white\/20 { background-color: rgba(0, 0, 0, 0.1); }
+
+.light .border-white\/5 { border-color: rgba(0, 0, 0, 0.05); }
+.light .border-white\/10 { border-color: rgba(0, 0, 0, 0.1); }
+.light .border-white\/20 { border-color: rgba(0, 0, 0, 0.15); }
+
+.light .hover\:text-white:hover { color: #000; }
+.light .hover\:text-white\/90:hover { color: rgba(0, 0, 0, 0.9); }
+.light .hover\:text-white\/80:hover { color: rgba(0, 0, 0, 0.8); }
+.light .hover\:text-white\/70:hover { color: rgba(0, 0, 0, 0.7); }
+.light .hover\:border-white\/20:hover { border-color: rgba(0, 0, 0, 0.15); }
+
+/* Cyan accent - works in both modes */
+.text-cyan-400 {
+  color: #22d3ee;
+}
+.light .text-cyan-400 {
+  color: #0891b2;
+}
+
+/* Green/Red for quiz - works in both modes */
+.light .text-green-400 { color: #16a34a; }
+.light .text-red-400 { color: #dc2626; }
+
+/* Minimal scrollbar */
+::-webkit-scrollbar {
+  width: 2px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+.light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Placeholder */
+.light ::placeholder {
+  color: rgba(0, 0, 0, 0.3);
+}
