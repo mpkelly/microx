@@ -4,9 +4,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Uncomment and set this if deploying to a subpath like username.github.io/microx
-  // basePath: '/microx',
-  // assetPrefix: '/microx/',
+  basePath: '/microx',
+  assetPrefix: '/microx/',
   trailingSlash: true,
 };
 
