@@ -108,7 +108,7 @@ export function CreateModuleClient() {
       });
     }
 
-    router.push(`/modules/${moduleId}`);
+    router.push(`/modules/view?id=${moduleId}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

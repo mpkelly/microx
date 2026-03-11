@@ -37,7 +37,7 @@ export default function HomePage() {
       if (modules.length > 0) {
         newLines.push({ text: 'continue learning', typed: '' });
         modules.slice(0, 5).forEach((m) => {
-          newLines.push({ text: `→ ${m.title}`, href: `/modules/${m.id}`, typed: '' });
+          newLines.push({ text: `→ ${m.title}`, href: `/modules/view?id=${m.id}`, typed: '' });
         });
         newLines.push({ text: '', typed: '' });
       }

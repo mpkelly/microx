@@ -1,16 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { getModule, getLessonsByModule, getProgress, getRelatedModules, getAllModules } from '@/lib/db';
-import type { Module, Lesson, UserProgress, TopicLink } from '@/types';
+import type { Module, Lesson, UserProgress } from '@/types';
 
-export function ModuleDetailClient() {
-  const params = useParams();
+export function ModuleViewClient() {
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const moduleId = params.moduleId as string;
+  const moduleId = searchParams.get('id');
 
   const [module, setModule] = useState<Module | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -18,10 +18,15 @@ export function ModuleDetailClient() {
   const [relatedModules, setRelatedModules] = useState<Module[]>([]);
 
   useEffect(() => {
+    if (!moduleId) {
+      router.push('/');
+      return;
+    }
     loadModule();
   }, [moduleId]);
 
   async function loadModule() {
+    if (!moduleId) return;
     const mod = await getModule(moduleId);
     if (!mod) {
       router.push('/');
@@ -38,7 +43,6 @@ export function ModuleDetailClient() {
     setLessons(lessonList);
     setProgress(prog ?? null);
 
-    // Get related module objects
     const relatedIds = new Set(links.map(l => l.sourceModuleId === moduleId ? l.targetModuleId : l.sourceModuleId));
     setRelatedModules(allMods.filter(m => relatedIds.has(m.id)));
   }
@@ -57,11 +61,11 @@ export function ModuleDetailClient() {
   return (
     <div className="space-y-8">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2">
-        <Link href="/" className="text-xs text-white/70 hover:text-white/70">
+        <Link href="/" className="text-xs text-white/70 hover:text-white/90">
           ← back
         </Link>
-        <h1 className="text-xl text-white/80">{module.title}</h1>
-        <p className="text-white/80 text-sm">{module.description}</p>
+        <h1 className="text-xl text-white/90">{module.title}</h1>
+        <p className="text-white/70 text-sm">{module.description}</p>
       </motion.div>
 
       <motion.div
@@ -77,15 +81,15 @@ export function ModuleDetailClient() {
           return (
             <Link
               key={i}
-              href={`/modules/${moduleId}/lesson/${i}`}
+              href={`/modules/lesson?id=${moduleId}&lesson=${i}`}
               className="block py-3 border-b border-white/5 hover:border-white/20 transition-colors group"
             >
               <div className="flex items-center gap-4">
-                <span className="mono text-xs text-white/80 w-6">{i + 1}</span>
-                <span className={`text-sm ${isCompleted ? 'text-white/70' : 'text-white/80 group-hover:text-white'}`}>
+                <span className="mono text-xs text-white/60 w-6">{i + 1}</span>
+                <span className={`text-sm ${isCompleted ? 'text-white/60' : 'text-white/90 group-hover:text-white'}`}>
                   {lesson.title}
                 </span>
-                {isCompleted && <span className="text-xs text-white/80">✓</span>}
+                {isCompleted && <span className="text-xs text-white/60">✓</span>}
               </div>
             </Link>
           );
@@ -99,12 +103,12 @@ export function ModuleDetailClient() {
           transition={{ delay: 0.2 }}
           className="pt-6 space-y-2"
         >
-          <p className="text-xs text-white/80">related</p>
+          <p className="text-xs text-white/60">related</p>
           {relatedModules.map((rm) => (
             <Link
               key={rm.id}
-              href={`/modules/${rm.id}`}
-              className="block text-sm text-white/80 hover:text-white/90 transition-colors"
+              href={`/modules/view?id=${rm.id}`}
+              className="block text-sm text-white/70 hover:text-white/90 transition-colors"
             >
               → {rm.title}
             </Link>
@@ -120,7 +124,7 @@ export function ModuleDetailClient() {
       >
         <Link
           href={`/modules/create?ref=${moduleId}`}
-          className="text-white/70 text-sm hover:text-white/80 transition-colors"
+          className="text-white/60 text-sm hover:text-white/80 transition-colors"
         >
           + create related module
         </Link>

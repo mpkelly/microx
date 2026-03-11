@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { getModule, getLessonsByModule, createLesson, updateProgress, logActivity } from '@/lib/db';
@@ -20,11 +20,11 @@ function cleanJson(text: string): string {
 
 type LessonOutline = { title: string; focus: string };
 
-export function LessonClient() {
-  const params = useParams();
+export function LessonViewClient() {
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const moduleId = params.moduleId as string;
-  const lessonIndex = parseInt(params.lessonIndex as string, 10);
+  const moduleId = searchParams.get('id');
+  const lessonIndex = parseInt(searchParams.get('lesson') ?? '0', 10);
 
   const [module, setModule] = useState<Module | null>(null);
   const [lesson, setLesson] = useState<Lesson | null>(null);
@@ -34,10 +34,15 @@ export function LessonClient() {
   const [startTime] = useState(Date.now());
 
   useEffect(() => {
+    if (!moduleId) {
+      router.push('/');
+      return;
+    }
     loadLesson();
   }, [moduleId, lessonIndex]);
 
   async function loadLesson() {
+    if (!moduleId) return;
     const mod = await getModule(moduleId);
     if (!mod) {
       router.push('/');
@@ -107,7 +112,7 @@ export function LessonClient() {
   }
 
   const handleComplete = useCallback(async () => {
-    if (!lesson || completed) return;
+    if (!lesson || completed || !moduleId) return;
     setCompleted(true);
     const duration = Math.round((Date.now() - startTime) / 1000);
 
@@ -142,9 +147,8 @@ export function LessonClient() {
 
   return (
     <div className="space-y-12">
-      {/* Minimal header */}
       <header className="space-y-4">
-        <Link href={`/modules/${moduleId}`} className="text-xs text-white/70 hover:text-white/70">
+        <Link href={`/modules/view?id=${moduleId}`} className="text-xs text-white/70 hover:text-white/90">
           ← back
         </Link>
         <motion.div
@@ -160,21 +164,18 @@ export function LessonClient() {
         </motion.div>
       </header>
 
-      {/* Generating state */}
       {generating && blocks.length === 0 && (
         <motion.p
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.3 }}
+          animate={{ opacity: 0.5 }}
           className="text-sm mono"
         >
           generating...
         </motion.p>
       )}
 
-      {/* Content */}
       <BlockRenderer blocks={blocks} />
 
-      {/* Navigation */}
       {!generating && blocks.length > 0 && (
         <motion.footer
           initial={{ opacity: 0 }}
@@ -185,13 +186,13 @@ export function LessonClient() {
           {completed ? (
             hasNext ? (
               <Link
-                href={`/modules/${moduleId}/lesson/${lessonIndex + 1}`}
-                className="text-white/80 hover:text-white"
+                href={`/modules/lesson?id=${moduleId}&lesson=${lessonIndex + 1}`}
+                className="text-white/90 hover:text-white"
               >
                 next →
               </Link>
             ) : (
-              <Link href="/" className="text-white/80 hover:text-white">
+              <Link href="/" className="text-white/90 hover:text-white">
                 done →
               </Link>
             )
