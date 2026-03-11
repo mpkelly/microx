@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { generateModuleOutline, type GeneratedOutline } from '@/lib/ai/gemini';
 import { createModule, getModule, createTopicLink } from '@/lib/db';
 import { generateId } from '@/lib/utils';
@@ -220,6 +221,22 @@ export function CreateModuleClient() {
           >
             generate →
           </motion.button>
+        )}
+
+        {!refModule && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="pt-8"
+          >
+            <Link
+              href="/modules/lyrics"
+              className="text-white/50 text-xs hover:text-white/70 transition-colors"
+            >
+              or import from song lyrics →
+            </Link>
+          </motion.div>
         )}
       </motion.div>
     </div>

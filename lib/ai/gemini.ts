@@ -186,6 +186,64 @@ Provide a clear, concise answer (2-4 sentences). If the question relates to the 
   return result.response.text();
 }
 
+// ============================================
+// LYRICS ANALYSIS
+// ============================================
+
+export interface LyricsAnalysis {
+  title: string;
+  description: string;
+  detectedLanguage: string;
+  lessons: {
+    title: string;
+    focus: string;
+    words: string[];
+  }[];
+}
+
+export async function analyzeLyrics(
+  lyrics: string,
+  language?: string,
+  songTitle?: string
+): Promise<LyricsAnalysis> {
+  const model = getModel();
+
+  const prompt = `Analyze these song lyrics for vocabulary learning.
+
+${songTitle ? `Song: ${songTitle}` : ''}
+${language ? `Language: ${language}` : 'Detect the language.'}
+
+Lyrics:
+${lyrics}
+
+Create a vocabulary learning module. Group interesting/useful words into themed lessons (3-5 words per lesson). Focus on:
+- Common words a learner should know
+- Slang or colloquial expressions
+- Emotionally significant words
+- Words that appear multiple times
+
+Return JSON:
+{
+  "title": "Vocabulary from [song name or 'Song Lyrics']",
+  "description": "Learn X words and phrases from this song",
+  "detectedLanguage": "language code (e.g., 'th', 'ja', 'ko', 'es')",
+  "lessons": [
+    {
+      "title": "Theme name (e.g., 'Emotions', 'Actions', 'Time & Place')",
+      "focus": "What these words have in common",
+      "words": ["word1", "word2", "word3"]
+    }
+  ]
+}
+
+Create 4-6 lessons covering the most valuable vocabulary.`;
+
+  const result = await model.generateContent(prompt);
+  const response = result.response.text();
+
+  return JSON.parse(cleanJsonResponse(response)) as LyricsAnalysis;
+}
+
 export async function generateModuleFromQA(
   question: string,
   answer: string,

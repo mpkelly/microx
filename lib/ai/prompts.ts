@@ -50,6 +50,41 @@ export function buildLessonPrompt(outline: ModuleOutline, context: GenerationCon
     ? `\nPrevious lessons already covered: ${context.previousLessons.join(', ')}\nDo NOT repeat this content.`
     : '';
 
+  // Special handling for lyrics vocabulary modules
+  if (outline.framework === 'lyrics-vocab') {
+    const params = outline.parameters as {
+      sourceLanguage: string;
+      originalLyrics: string;
+      lessons: { title: string; focus: string; words: string[] }[];
+    };
+    const currentLesson = params.lessons.find(l => context.lessonTopic.includes(l.title));
+    const words = currentLesson?.words || [];
+
+    return `${LESSON_SYSTEM_PROMPT}
+
+LYRICS VOCABULARY LESSON
+
+Source language: ${params.sourceLanguage}
+Words to teach: ${words.join(', ')}
+Theme: ${context.lessonTopic}
+
+Original lyrics (for context and examples):
+${params.originalLyrics.slice(0, 1500)}
+
+Create a vocabulary lesson with these requirements:
+1. Start with a brief text block introducing the theme (1-2 sentences)
+2. Create a vocab-card for EACH word (${words.length} cards total)
+   - Include pronunciation and romanization
+   - Use lines from the lyrics as example sentences
+   - Add the English translation of the example
+3. Add a callout with a cultural note or usage tip
+4. End with a quiz testing 2-3 of the words
+
+Make each vocab-card thorough - these are the main content. Include part of speech and good examples from the actual lyrics.
+
+Generate as JSON.`;
+  }
+
   return `${LESSON_SYSTEM_PROMPT}
 
 MODULE CONTEXT:
