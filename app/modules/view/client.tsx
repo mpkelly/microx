@@ -97,6 +97,19 @@ export function ModuleViewClient() {
         })}
       </motion.div>
 
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.15 }}
+        className="pt-6 border-t border-white/5"
+      >
+        <ModuleQA
+          module={module}
+          lessonTitles={(outlineLessons ?? []).map(l => l.title)}
+          onQuestionAdded={loadModule}
+        />
+      </motion.div>
+
       {relatedModules.length > 0 && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -116,19 +129,6 @@ export function ModuleViewClient() {
           ))}
         </motion.div>
       )}
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="pt-8 border-t border-white/5"
-      >
-        <ModuleQA
-          module={module}
-          lessonTitles={(outlineLessons ?? []).map(l => l.title)}
-          onQuestionAdded={loadModule}
-        />
-      </motion.div>
 
       <motion.div
         initial={{ opacity: 0 }}
