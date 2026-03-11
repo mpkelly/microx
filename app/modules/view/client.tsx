@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { getModule, getLessonsByModule, getProgress, getRelatedModules, getAllModules } from '@/lib/db';
+import { ModuleQA } from '@/components/module-qa';
 import type { Module, Lesson, UserProgress } from '@/types';
 
 export function ModuleViewClient() {
@@ -121,6 +122,19 @@ export function ModuleViewClient() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
         className="pt-8 border-t border-white/5"
+      >
+        <ModuleQA
+          module={module}
+          lessonTitles={(outlineLessons ?? []).map(l => l.title)}
+          onQuestionAdded={loadModule}
+        />
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        className="pt-4"
       >
         <Link
           href={`/modules/create?ref=${moduleId}`}

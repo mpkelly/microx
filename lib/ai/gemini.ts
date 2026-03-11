@@ -153,3 +153,67 @@ export function clearApiKey(): void {
   localStorage.removeItem('gemini_api_key');
   genAI = null;
 }
+
+// ============================================
+// Q&A
+// ============================================
+
+function getTextModel(): GenerativeModel {
+  return getGemini().getGenerativeModel({
+    model: 'gemini-2.5-flash',
+  });
+}
+
+export async function answerQuestion(
+  moduleTitle: string,
+  moduleDescription: string,
+  lessonTitles: string[],
+  question: string
+): Promise<string> {
+  const model = getTextModel();
+
+  const prompt = `You are a helpful tutor. The student is learning about:
+
+Module: ${moduleTitle}
+Description: ${moduleDescription}
+Lessons covered: ${lessonTitles.join(', ')}
+
+The student asks: "${question}"
+
+Provide a clear, concise answer (2-4 sentences). If the question relates to the module topic, give specific, educational information. If it's off-topic, gently redirect while still being helpful.`;
+
+  const result = await model.generateContent(prompt);
+  return result.response.text();
+}
+
+export async function generateModuleFromQA(
+  question: string,
+  answer: string,
+  parentModuleTitle: string
+): Promise<GeneratedOutline> {
+  const model = getModel();
+
+  const prompt = `Based on this Q&A from a learning session about "${parentModuleTitle}", create a focused micro-learning module outline.
+
+Question: ${question}
+Answer: ${answer}
+
+Create a module that dives deeper into this topic. Return JSON:
+{
+  "title": "short title (3-5 words)",
+  "description": "one sentence description",
+  "lessons": [
+    { "title": "lesson title", "focus": "specific focus of this lesson" }
+  ],
+  "tags": ["tag1", "tag2"],
+  "difficulty": "beginner" | "intermediate" | "advanced",
+  "estimatedMinutes": number (total for all lessons, usually 5-15)
+}
+
+Create 3-5 focused lessons that explore this topic in depth.`;
+
+  const result = await model.generateContent(prompt);
+  const response = result.response.text();
+
+  return JSON.parse(cleanJsonResponse(response)) as GeneratedOutline;
+}

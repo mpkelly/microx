@@ -6,6 +6,7 @@ import type {
   TopicLink,
   GenerationLog,
   UserProgress,
+  ModuleQuestion,
 } from '@/types';
 
 export class MicroXDatabase extends Dexie {
@@ -147,4 +148,17 @@ export async function getRelatedModules(moduleId: string): Promise<TopicLink[]> 
   const asSource = await db.topicLinks.where('sourceModuleId').equals(moduleId).toArray();
   const asTarget = await db.topicLinks.where('targetModuleId').equals(moduleId).toArray();
   return [...asSource, ...asTarget];
+}
+
+// ============================================
+// Q&A OPERATIONS
+// ============================================
+
+export async function addQuestionToModule(moduleId: string, question: ModuleQuestion): Promise<void> {
+  const module = await db.modules.get(moduleId);
+  if (!module) return;
+
+  const questions = module.questions ?? [];
+  questions.push(question);
+  await db.modules.update(moduleId, { questions, updatedAt: new Date() });
 }

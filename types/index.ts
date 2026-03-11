@@ -188,6 +188,7 @@ export interface Module {
     estimatedMinutes: number;
     category: string;
   };
+  questions?: ModuleQuestion[];
 }
 
 export interface LessonContent {
@@ -277,4 +278,15 @@ export interface Suggestion {
   reason: string;
   priority: number;
   estimatedTime: number;
+}
+
+// ============================================
+// Q&A
+// ============================================
+
+export interface ModuleQuestion {
+  id: string;
+  question: string;
+  answer: string;
+  createdAt: Date;
 }
